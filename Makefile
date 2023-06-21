@@ -4,6 +4,9 @@ postgres:
 createdb:
 	docker exec -it postgres15 createdb --username=root --owner=root simple_bank
 
+start-postgres:
+	docker start postgres15
+
 dropdb:
 	docker exec -it postgres15 dropdb simple_bank
 
@@ -19,7 +22,10 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+server:
+	go run main.go
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test server
 
 
 
