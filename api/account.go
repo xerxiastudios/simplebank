@@ -6,6 +6,7 @@ import (
 	db "simplebank/db/sqlc"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/golang/mock/mockgen/model"
 )
 
 type createAccountRequest struct {
