@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	mockdb "simplebank/db/mock"
 	db "simplebank/db/sqlc"
+	"simplebank/util"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,9 @@ func TestCreateTransfer(t *testing.T) {
 	account1 := randomAccount()
 	account2 := randomAccount()
 
+	account1.Currency = util.USD
+	account2.Currency = util.USD
+
 	testCases := []struct {
 		name          string
 		body          gin.H
@@ -26,7 +30,7 @@ func TestCreateTransfer(t *testing.T) {
 	}{
 		{
 			name: "OK",
-			body: gin.H{"from_account_id": account1.ID, "to_account_id": account2.ID, "amount": 5, "currency": "USD"},
+			body: gin.H{"from_account_id": account1.ID, "to_account_id": account2.ID, "amount": 5, "currency": util.USD},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account1.ID)).Times(1).Return(account1, nil)
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account2.ID)).Times(1).Return(account2, nil)
@@ -36,7 +40,7 @@ func TestCreateTransfer(t *testing.T) {
 					ToAccountID:   account2.ID,
 					Amount:        5,
 				}
-				store.EXPECT().TransferTx(gomock.Any(), gomock.Eq(arg)).Times(1).Return(db.TransferTxResult{}, nil)
+				store.EXPECT().TransferTx(gomock.Any(), gomock.Eq(arg)).Times(1)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
