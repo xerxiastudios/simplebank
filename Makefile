@@ -1,5 +1,5 @@
 postgres:
-	docker run --name postgres15 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:15.3-alpine
+	docker run --name postgres15 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:15.3-alpine
 
 createdb:
 	docker exec -it postgres15 createdb --username=root --owner=root simple_bank
@@ -40,3 +40,4 @@ mock:
 
 #  docker run --rm -v "C:\Users\abhis\OneDrive\Desktop\Xerxia\simplebank:/src" -w /src kjconroy/sqlc init
 #  docker run --rm -v "C:\Users\abhis\OneDrive\Desktop\Xerxia\simplebank:/src" -w /src kjconroy/sqlc generate
+#  docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release -e "DB_SOURCE=postgresql://root:secret@postgres15:5432/simple_bank?sslmode=disable" simplebank:latest
